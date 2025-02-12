@@ -14,6 +14,13 @@ const subdirectoryMappings = {
 // 创建HTTP服务器
 const server = http.createServer((req, res) => {
         // proxyRes.headers =  
+     res.setHeader('Access-Control-Allow-Origin', '*');
+    // 允许所有请求方法
+    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+    // 允许所有请求头
+    res.setHeader('Access-Control-Allow-Headers', req.headers['access-control-request-headers'] || '*');
+    // 允许携带凭证（如 cookies）
+    res.setHeader('Access-Control-Allow-Credentials', 'true');
       proxy.options.target=subdirectoryMappings.shunlihu;
        
          req.headers['origin'] = subdirectoryMappings.shunlihu;
