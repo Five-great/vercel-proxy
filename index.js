@@ -25,7 +25,7 @@ const server = http.createServer((req, res) => {
     proxy.web(req, res);
 });
 // 监听端口
-const port = 3000;
+const port = 9080;
 server.listen(port, () => {
     console.log(`Proxy server is running on port ${port}`);
 });
