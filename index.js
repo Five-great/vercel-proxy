@@ -63,7 +63,7 @@ proxy.on('error', (err, req, res) => {
 proxy.on('proxyRes', (proxyRes, req, res) => {
     // 处理可能需要修改的响应头，比如修改 cookie 中的 domain 等
     // console.log(11, req.headers)
-         proxyRes.headers =  req.headers
+         proxyRes.headers =  res.headers
          proxyRes.headers['host'] = "h5.hunlihu.com";
          proxyRes.headers['origin'] = "https://s.hunlihu.com";
          proxyRes.headers['referer'] = "https://s.hunlihu.com";
