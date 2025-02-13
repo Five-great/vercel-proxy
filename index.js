@@ -13,6 +13,8 @@ const subdirectoryMappings = {
 };
 // 创建HTTP服务器
 const server = http.createServer((req, res) => {
+
+   if(new RegExp(`^\/shunlihu\/`).test(req.url)){
         // proxyRes.headers =  
      res.setHeader('Access-Control-Allow-Origin', '*');
     // 允许所有请求方法
@@ -29,7 +31,8 @@ const server = http.createServer((req, res) => {
          req.url = req.url.replace(new RegExp(`^\/shunlihu`), '');
              console.log(11,req.url, req.headers)
     // 将请求代理到目标服务器
-    proxy.web(req, res);
+     proxy.web(req, res);
+   }
 });
 // 监听端口
 const port = 9080;
