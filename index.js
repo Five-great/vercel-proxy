@@ -7,7 +7,8 @@ const querystring = require('querystring');
 
 let getFormData = (req)=>{
     return new Promise((resolve,reject)=>{
-        if (req.method === 'POST' && req.headers['content-type'] === 'application/x-www-form-urlencoded') {
+        
+        if (req.method === 'POST' && /application\/x\-www\-form\-urlencoded/.test(req.headers['content-type'])) {
             let body = '';
     
             // 监听 data 事件，接收数据块
