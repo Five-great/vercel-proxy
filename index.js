@@ -7,7 +7,6 @@ const querystring = require('querystring');
 
 let getFormData = (req)=>{
     return new Promise((resolve,reject)=>{
-        
         if (req.method === 'POST' && /application\/x\-www\-form\-urlencoded/.test(req.headers['content-type'])) {
             let body = '';
     
@@ -62,7 +61,7 @@ return new Promise((resolve,reject)=>{
     };
     
     // let url= "https://h5.hunlihu.com/vashow/ly/door/door/sign2";
-    let url= "https://h5.hunlihu.com"+proxyUrl;
+    let url= "http://h5.hunlihu.com"+proxyUrl;
     
         // 将对象格式的数据转换为 x-www-form-urlencoded 格式
         const encodedData = querystring.stringify(formData);
@@ -132,7 +131,7 @@ const server = http.createServer(async(req, res) => {
     res.setHeader('Access-Control-Allow-Credentials', 'true');
     https://h5.hunlihu.com/vashow/ly/door/door/init?0.9173087912286308
     if(/\/vashow\/ly\/door\/door\/init/.test(req.url)){
-       let proxyData = await getProxyInfoData(req, res,req.url.replace(/^\/shunlihu/, ''))
+       let proxyData = await getProxyInfoData(req, res,req.url.replace(/^\/h5hunlihu/, ''))
        res.writeHead(200, { 'Content-Type': 'text/html;charset=utf-8' });
         res.end(proxyData);
     }else{
@@ -140,7 +139,7 @@ const server = http.createServer(async(req, res) => {
         req.headers['origin'] = subdirectoryMappings.shunlihu;
         req.headers['referer'] = subdirectoryMappings.shunlihu;
         req.headers['host'] = "h5.hunlihu.com";
-        req.url = req.url.replace(new RegExp(`^\/shunlihu`), '');
+        req.url = req.url.replace(new RegExp(`^\/h5hunlihu`), '');
       // 将请求代理到目标服务器
         proxy.web(req, res);
     }
