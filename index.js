@@ -5,7 +5,30 @@ const httpProxy = require('http-proxy');
 const axios = require('axios');
 const querystring = require('querystring');
 
+let getFormData = (req)=>{
+    return new Promise((resolve,reject)=>{
+        if (req.method === 'POST' && req.headers['content-type'] === 'application/x-www-form-urlencoded') {
+            let body = '';
+    
+            // 监听 data 事件，接收数据块
+            req.on('data', (chunk) => {
+                body += chunk.toString();
+            });
+    
+            // 监听 end 事件，数据接收完成
+            req.on('end', () => {
+                // 解析请求体
+                const formData = querystring.parse(body);
+               
+                // 打印解析后的数据
+                console.log('解析后的表单数据:', formData);
+                resolve(formData)
+                
+            });
+        }
 
+    })
+}
 let getProxyInfoData = (req, res, proxyUrl)=>{
 
     var headersData = {
@@ -31,19 +54,16 @@ let getProxyInfoData = (req, res, proxyUrl)=>{
 
 //   }
 return new Promise((resolve,reject)=>{
-   let formData = body
-
+    getFormData(req).then((formData)=>{
 // 目标服务器地址和端口
-const options = {
-
-headers: headersData
-};
-
-// let url= "https://h5.hunlihu.com/vashow/ly/door/door/sign2";
-let url= "https://h5.hunlihu.com"+proxyUrl;
-
-
-// 将对象格式的数据转换为 x-www-form-urlencoded 格式
+    const options = {
+     headers: headersData
+    };
+    
+    // let url= "https://h5.hunlihu.com/vashow/ly/door/door/sign2";
+    let url= "https://h5.hunlihu.com"+proxyUrl;
+    
+        // 将对象格式的数据转换为 x-www-form-urlencoded 格式
         const encodedData = querystring.stringify(formData);
 
         // 更新请求头中的 Content-Length
@@ -55,6 +75,9 @@ let url= "https://h5.hunlihu.com"+proxyUrl;
         }).catch((err)=>{
             reject(err)
         })
+
+    })
+
  })
 }
     
