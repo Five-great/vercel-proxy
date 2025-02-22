@@ -97,6 +97,7 @@ const proxy = httpProxy.createProxyServer({
 const subdirectoryMappings = {
     'shunlihu': 'https://s.hunlihu.com',
      'h5hunlihu': 'https://h5.hunlihu.com',
+     'map': "https://api.map.baidu.com",
 };
 // 创建HTTP服务器
 const server = http.createServer(async(req, res) => {
@@ -135,9 +136,9 @@ const server = http.createServer(async(req, res) => {
        let proxyData = await getProxyInfoData(req, res,req.url.replace(/^\/h5hunlihu/, ''))
        eval('var proxyDataObj ='+proxyData)
        proxyDataObj.info.is_pay='1'
-
+       console.log(proxyDataObj)
        res.writeHead(200, { 'Content-Type': 'text/html;charset=utf-8' });
-        res.end(proxyDataObj);
+        res.end(`${proxyDataObj}`);
     }else{
         proxy.options.target=subdirectoryMappings.h5hunlihu;
         req.headers['origin'] = subdirectoryMappings.shunlihu;
@@ -150,6 +151,28 @@ const server = http.createServer(async(req, res) => {
       
       
    }
+   if(new RegExp(`^\/map\/`).test(req.url)){
+    // proxyRes.headers =  
+ res.setHeader('Access-Control-Allow-Origin', '*');
+// 允许所有请求方法
+res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+// 允许所有请求头
+res.setHeader('Access-Control-Allow-Headers', req.headers['access-control-request-headers'] || '*');
+// 允许携带凭证（如 cookies）
+res.setHeader('Access-Control-Allow-Credentials', 'true');
+//https://h5.hunlihu.com/vashow/ly/door/door/init?0.9173087912286308
+
+    proxy.options.target=subdirectoryMappings.map;
+    req.headers['origin'] = subdirectoryMappings.shunlihu;
+    req.headers['referer'] = subdirectoryMappings.shunlihu;
+    req.headers['host'] =  "api.map.baidu.com";
+    req.url = req.url.replace(new RegExp(`^\/map`), '/');
+  // 将请求代理到目标服务器
+    proxy.web(req, res);
+}
+  
+  
+}
 });
 // 监听端口
 const port = 9080;
