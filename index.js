@@ -21,7 +21,7 @@ let getFormData = (req)=>{
                 const formData = querystring.parse(body);
                
                 // 打印解析后的数据
-                console.log('解析后的表单数据:', formData);
+                // console.log('解析后的表单数据:', formData);
                 resolve(formData)
                 
             });
@@ -55,6 +55,7 @@ let getProxyInfoData = (req, res, proxyUrl)=>{
 //   }
 return new Promise((resolve,reject)=>{
     getFormData(req).then((formData)=>{
+        formData.ua? headersData["sec-ch-ua"]=formData.ua:''
 // 目标服务器地址和端口
     const options = {
      headers: headersData
@@ -132,8 +133,11 @@ const server = http.createServer(async(req, res) => {
     https://h5.hunlihu.com/vashow/ly/door/door/init?0.9173087912286308
     if(/\/vashow\/ly\/door\/door\/init/.test(req.url)){
        let proxyData = await getProxyInfoData(req, res,req.url.replace(/^\/h5hunlihu/, ''))
+       eval('var proxyDataObj ='+proxyData)
+       proxyDataObj.info.is_pay='1'
+
        res.writeHead(200, { 'Content-Type': 'text/html;charset=utf-8' });
-        res.end(proxyData);
+        res.end(proxyDataObj);
     }else{
         proxy.options.target=subdirectoryMappings.h5hunlihu;
         req.headers['origin'] = subdirectoryMappings.shunlihu;
