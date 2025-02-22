@@ -151,7 +151,7 @@ const server = http.createServer(async(req, res) => {
       
       
    }
-   if(new RegExp(`^\/map\/`).test(req.url)){
+   if(new RegExp(`^\/map`).test(req.url)){
     // proxyRes.headers =  
  res.setHeader('Access-Control-Allow-Origin', '*');
 // 允许所有请求方法
@@ -169,9 +169,6 @@ res.setHeader('Access-Control-Allow-Credentials', 'true');
     req.url = req.url.replace(new RegExp(`^\/map`), '/');
   // 将请求代理到目标服务器
     proxy.web(req, res);
-}
-  
-  
 }
 });
 // 监听端口
