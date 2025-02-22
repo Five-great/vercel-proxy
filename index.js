@@ -138,7 +138,7 @@ const server = http.createServer(async(req, res) => {
        proxyDataObj.info.is_pay='1'
        console.log(proxyDataObj)
        res.writeHead(200, { 'Content-Type': 'text/html;charset=utf-8' });
-        res.end(`${proxyDataObj}`);
+        res.end(`${JSON.stringify(proxyDataObj)}`);
     }else{
         proxy.options.target=subdirectoryMappings.h5hunlihu;
         req.headers['origin'] = subdirectoryMappings.shunlihu;
