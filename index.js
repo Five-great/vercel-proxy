@@ -98,11 +98,29 @@ const subdirectoryMappings = {
     'shunlihu': 'https://s.hunlihu.com',
      'h5hunlihu': 'https://h5.hunlihu.com',
      'map': "https://api.map.baidu.com",
+     "blogs":  "https://img2024.cnblogs.com"
 };
 // 创建HTTP服务器
 const server = http.createServer(async(req, res) => {
     
-
+   if(new RegExp(`^\/static-img\/`).test(req.url)){
+         res.setHeader('Access-Control-Allow-Origin', '*');
+    // 允许所有请求方法
+    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+    // 允许所有请求头
+    res.setHeader('Access-Control-Allow-Headers', req.headers['access-control-request-headers'] || '*');
+    // 允许携带凭证（如 cookies）
+    res.setHeader('Access-Control-Allow-Credentials', 'true');
+      proxy.options.target=subdirectoryMappings.blogs;
+       
+         req.headers['origin'] = subdirectoryMappings.blogs;
+         req.headers['referer'] = 'https://www.cnblogs.com/';
+         req.headers['host'] = "img2024.cnblogs.com";
+         req.url = req.url.replace(new RegExp(`^\/static-img`), '/blog');
+            
+    // 将请求代理到目标服务器
+     proxy.web(req, res);
+   }
    if(new RegExp(`^\/shunlihu\/`).test(req.url)){
         // proxyRes.headers =  
      res.setHeader('Access-Control-Allow-Origin', '*');
