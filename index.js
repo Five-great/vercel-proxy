@@ -98,7 +98,8 @@ const subdirectoryMappings = {
     'shunlihu': 'https://s.hunlihu.com',
      'h5hunlihu': 'https://h5.hunlihu.com',
      'map': "https://api.map.baidu.com",
-     "blogs":  "https://img2024.cnblogs.com"
+     "blogs":  "https://img2024.cnblogs.com",
+     "upload": "https://upload.cnblogs.com",
 };
 // 创建HTTP服务器
 const server = http.createServer(async(req, res) => {
@@ -149,7 +150,7 @@ const server = http.createServer(async(req, res) => {
     res.setHeader('Access-Control-Allow-Headers', req.headers['access-control-request-headers'] || '*');
     // 允许携带凭证（如 cookies）
     res.setHeader('Access-Control-Allow-Credentials', 'true');
-    https://h5.hunlihu.com/vashow/ly/door/door/init?0.9173087912286308
+    //https://h5.hunlihu.com/vashow/ly/door/door/init?0.9173087912286308
     if(/\/vashow\/ly\/door\/door\/init/.test(req.url)){
        let proxyData = await getProxyInfoData(req, res,req.url.replace(/^\/h5hunlihu/, ''))
        eval('var proxyDataObj ='+proxyData)
@@ -188,6 +189,26 @@ res.setHeader('Access-Control-Allow-Credentials', 'true');
   // 将请求代理到目标服务器
     proxy.web(req, res);
 }
+   if(new RegExp(`^\/api\/upload`).test(req.url)){
+    // proxyRes.headers =  
+ res.setHeader('Access-Control-Allow-Origin', '*');
+// 允许所有请求方法
+res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+// 允许所有请求头
+res.setHeader('Access-Control-Allow-Headers', req.headers['access-control-request-headers'] || '*');
+// 允许携带凭证（如 cookies）
+res.setHeader('Access-Control-Allow-Credentials', 'true');
+//https://h5.hunlihu.com/vashow/ly/door/door/init?0.9173087912286308
+
+    proxy.options.target=subdirectoryMappings.upload;
+    req.headers['origin'] = 'https://i.cnblogs.com;
+    req.headers['referer'] = 'https://i.cnblogs.com';
+    req.headers['host'] =  "upload.cnblogs.com";
+    req.url = req.url.replace(new RegExp(`^\/api\/upload`), '/imageuploader/CorsUpload');
+  // 将请求代理到目标服务器
+    proxy.web(req, res);
+}
+    
 });
 // 监听端口
 const port = 9080;
