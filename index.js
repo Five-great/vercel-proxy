@@ -1,7 +1,7 @@
 const http = require('http');
 const httpProxy = require('http-proxy');
 
-
+const formidable = require('formidable');
 const axios = require('axios');
 const querystring = require('querystring');
 
@@ -28,6 +28,56 @@ let getFormData = (req)=>{
         }
 
     })
+}
+
+let uploadFiles=(req,res)=>{
+    if (req.method === 'POST') {
+        const form = new formidable.IncomingForm();
+
+        // 解析 FormData
+        form.parse(req, async (err, fields, files) => {
+            if (err) {
+                console.error('解析表单数据时出错:', err);
+                res.writeHead(500, { 'Content-Type': 'text/plain' });
+                res.end('解析表单数据时出错');
+                return;
+            }
+
+            // 获取图片文件
+            const imageFile = files.image;
+            if (!imageFile) {
+                res.writeHead(400, { 'Content-Type': 'text/plain' });
+                res.end('未找到图片文件');
+                return;
+            }
+
+            try {
+                // 创建新的 FormData 对象，用于转发到第三方接口
+                const formData = new formidable.IncomingForm();
+                const newFormData = new (require('form-data'))();
+                newFormData.append('image', require('fs').createReadStream(imageFile.filepath));
+               
+                // 发送 POST 请求到第三方接口
+                const response = await axios.post('https://upload.cnblogs.com'+req.url, newFormData, {
+                    headers: {
+                        ...req.headers,
+                        'Access-Control-Allow-Origin', 'https://i.cnblogs.com'
+                    }
+                });
+
+                // 将第三方接口的响应返回给客户端
+                res.writeHead(200, { 'Content-Type': 'application/json' });
+                res.end(JSON.stringify(response.data));
+            } catch (error) {
+                console.error('转发请求到第三方接口时出错:', error);
+                res.writeHead(500, { 'Content-Type': 'text/plain' });
+                res.end('转发请求到第三方接口时出错');
+            }
+        });
+    } else {
+        res.writeHead(405, { 'Content-Type': 'text/plain' });
+        res.end('只支持 POST 请求');
+    }
 }
 let getProxyInfoData = (req, res, proxyUrl)=>{
 
@@ -191,7 +241,7 @@ res.setHeader('Access-Control-Allow-Credentials', 'true');
 }
    if(new RegExp(`^\/api\/upload`).test(req.url)){
     // proxyRes.headers =  
- res.setHeader('Access-Control-Allow-Origin', 'https://i.cnblogs.com');
+ res.setHeader('Access-Control-Allow-Origin', '*');
 // 允许所有请求方法
 res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
 // 允许所有请求头
@@ -204,8 +254,9 @@ res.setHeader('Access-Control-Allow-Credentials', 'true');
     req.headers['referer'] = 'https://i.cnblogs.com';
     req.headers['host'] =  "upload.cnblogs.com";
     req.url = req.url.replace(new RegExp(`^\/api\/upload`), '/imageuploader/CorsUpload');
+       uploadFiles(req, res)
   // 将请求代理到目标服务器
-    proxy.web(req, res);
+    // proxy.web(req, res);
 }
     
 });
