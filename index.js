@@ -201,7 +201,7 @@ res.setHeader('Access-Control-Allow-Credentials', 'true');
 //https://h5.hunlihu.com/vashow/ly/door/door/init?0.9173087912286308
 
     proxy.options.target=subdirectoryMappings.upload;
-    req.headers['origin'] = 'https://i.cnblogs.com;
+    req.headers['origin'] = 'https://i.cnblogs.com';
     req.headers['referer'] = 'https://i.cnblogs.com';
     req.headers['host'] =  "upload.cnblogs.com";
     req.url = req.url.replace(new RegExp(`^\/api\/upload`), '/imageuploader/CorsUpload');
