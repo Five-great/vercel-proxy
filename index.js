@@ -191,7 +191,7 @@ res.setHeader('Access-Control-Allow-Credentials', 'true');
 }
    if(new RegExp(`^\/api\/upload`).test(req.url)){
     // proxyRes.headers =  
- res.setHeader('Access-Control-Allow-Origin', '*');
+ res.setHeader('Access-Control-Allow-Origin', 'https://i.cnblogs.com');
 // 允许所有请求方法
 res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
 // 允许所有请求头
@@ -199,7 +199,6 @@ res.setHeader('Access-Control-Allow-Headers', req.headers['access-control-reques
 // 允许携带凭证（如 cookies）
 res.setHeader('Access-Control-Allow-Credentials', 'true');
 //https://h5.hunlihu.com/vashow/ly/door/door/init?0.9173087912286308
-
     proxy.options.target=subdirectoryMappings.upload;
     req.headers['origin'] = 'https://i.cnblogs.com';
     req.headers['referer'] = 'https://i.cnblogs.com';
