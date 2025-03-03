@@ -55,7 +55,9 @@ let uploadFiles=(req,res)=>{
                 // 创建新的 FormData 对象，用于转发到第三方接口
                 const formData = new formidable.IncomingForm();
                 const newFormData = new (require('form-data'))();
-                newFormData.append('image', require('fs').createReadStream(imageFile.filepath));
+                newFormData.append('imageFile', imageFile);
+                newFormData.append('host','www.cnblogs.com');
+                newFormData.append('uploadType', 'Paste');
                
                 // 发送 POST 请求到第三方接口
                 const response = await axios.post('https://upload.cnblogs.com'+req.url, newFormData, {
