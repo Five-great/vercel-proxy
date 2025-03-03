@@ -44,7 +44,7 @@ let uploadFiles=(req,res)=>{
             }
 
             // 获取图片文件
-            const imageFile = files.image;
+            const imageFile = files.imageFile;
             if (!imageFile) {
                 res.writeHead(400, { 'Content-Type': 'text/plain' });
                 res.end('未找到图片文件');
