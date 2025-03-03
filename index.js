@@ -258,8 +258,12 @@ res.setHeader('Access-Control-Allow-Credentials', 'true');
          
        uploadFiles(req, res)
      }else{
+                 // 设置响应状态码
+        res.writeHead(204, { 'Content-Length': 0 });
+        res.end();
+
   // 将请求代理到目标服务器
-    proxy.web(req, res);
+    // proxy.web(req, res);
      }
 }
     
