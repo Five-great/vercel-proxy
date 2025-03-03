@@ -52,9 +52,9 @@ let uploadFiles=(req,res)=>{
             }
 
             try {
-                // 创建新的 FormData 对象，用于转发到第三方接口
-                const formData = new formidable.IncomingForm();
+               console.log(imageFile)
                 const newFormData = new (require('form-data'))();
+                 console.log(newFormData)
                 newFormData.append('imageFile', imageFile);
                 newFormData.append('host','www.cnblogs.com');
                 newFormData.append('uploadType', 'Paste');
