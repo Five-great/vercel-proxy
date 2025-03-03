@@ -257,7 +257,7 @@ res.setHeader('Access-Control-Allow-Credentials', 'true');
      if(req.method === 'POST'){
          
        uploadFiles(req, res)
-     }esle{
+     }else{
   // 将请求代理到目标服务器
     proxy.web(req, res);
      }
