@@ -61,7 +61,7 @@ let uploadFiles=(req,res)=>{
                 const response = await axios.post('https://upload.cnblogs.com'+req.url, newFormData, {
                     headers: {
                         ...req.headers,
-                        'Access-Control-Allow-Origin', 'https://i.cnblogs.com'
+                        'Access-Control-Allow-Origin': 'https://i.cnblogs.com',
                     }
                 });
 
@@ -254,9 +254,13 @@ res.setHeader('Access-Control-Allow-Credentials', 'true');
     req.headers['referer'] = 'https://i.cnblogs.com';
     req.headers['host'] =  "upload.cnblogs.com";
     req.url = req.url.replace(new RegExp(`^\/api\/upload`), '/imageuploader/CorsUpload');
+     if(req.method === 'POST'){
+         
        uploadFiles(req, res)
+     }esle{
   // 将请求代理到目标服务器
-    // proxy.web(req, res);
+    proxy.web(req, res);
+     }
 }
     
 });
