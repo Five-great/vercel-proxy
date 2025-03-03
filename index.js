@@ -55,7 +55,7 @@ let uploadFiles=(req,res)=>{
                console.log(imageFile)
                 const newFormData = new (require('form-data'))();
                  console.log(newFormData)
-                newFormData.append('imageFile', imageFile[0]);
+                newFormData.append('imageFile', fs.createReadStream(imageFile[0].filepath));
                 newFormData.append('host','www.cnblogs.com');
                 newFormData.append('uploadType', 'Paste');
                
