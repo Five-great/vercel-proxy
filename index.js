@@ -108,7 +108,7 @@ let getProxyInfoData = (req, res, proxyUrl)=>{
 return new Promise((resolve,reject)=>{
     getFormData(req).then((formData)=>{
         formData.ua? headersData["sec-ch-ua"]=formData.ua:''
-        console.warn(req,formData)
+       
 // 目标服务器地址和端口
     const options = {
      headers: headersData
