@@ -249,6 +249,16 @@ res.setHeader('Access-Control-Allow-Credentials', 'true');
            res.end(`/**/${callbackValue} && ${callbackValue}({error: 0})`)
            return
        }
+       if(/qt=jsapi_log/.test(req.url)){
+             const regex = /callback=([^&]+)/;
+           const match = req.url.match(regex);
+           const callbackValue = match[1];
+           res.writeHead(200, {
+                'Content-Type': 'application/javascript;charset=utf-8'
+            });
+           res.end(`/**/${callbackValue} && ${callbackValue}({"result":{"error":0}})`)
+           return
+       }
   // 将请求代理到目标服务器
     proxy.web(req, res);
 }
