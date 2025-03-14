@@ -208,7 +208,6 @@ const server = http.createServer(async(req, res) => {
        let proxyData = await getProxyInfoData(req, res,req.url.replace(/^\/h5hunlihu/, ''))
        eval('var proxyDataObj ='+proxyData)
        proxyDataObj.info.is_pay='1'
-       console.log(proxyDataObj)
        res.writeHead(200, { 'Content-Type': 'text/html;charset=utf-8' });
         res.end(`${JSON.stringify(proxyDataObj)}`);
     }else{
@@ -250,7 +249,7 @@ res.setHeader('Access-Control-Allow-Credentials', 'true');
            return
        }
        if(/qt=jsapi_log/.test(req.url)){
-             const regex = /callback=([^&]+)/;
+           const regex = /callback=([^&]+)/;
            const match = req.url.match(regex);
            const callbackValue = match[1];
            res.writeHead(200, {
