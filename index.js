@@ -239,6 +239,16 @@ res.setHeader('Access-Control-Allow-Credentials', 'true');
     req.headers['referer'] = subdirectoryMappings.shunlihu;
     req.headers['host'] =  "api.map.baidu.com";
     req.url = req.url.replace(new RegExp(`^\/map`), '/');
+       if(/qt=verify\&callback\=BMap/.test(req.url)){
+           const regex = /callback=([^&]+)/;
+           const match = req.url.match(regex);
+           const callbackValue = match[1];
+           res.writeHead(200, {
+                'Content-Type': 'application/javascript;charset=utf-8'
+            });
+           res.end(`/**/${callbackValue} && ${callbackValue}({error: 0})`)
+           return
+       }
   // 将请求代理到目标服务器
     proxy.web(req, res);
 }
