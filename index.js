@@ -1,7 +1,7 @@
 const http = require('http');
 const httpProxy = require('http-proxy');
 const fs = require('fs');
-const formidable = require('formidable');
+
 const axios = require('axios');
 const querystring = require('querystring');
 
@@ -31,55 +31,7 @@ let getFormData = (req)=>{
 }
 
 let uploadFiles=(req,res)=>{
-    if (req.method === 'POST') {
-        const form = new formidable.IncomingForm();
-
-        // 解析 FormData
-        form.parse(req, async (err, fields, files) => {
-            if (err) {
-                console.error('解析表单数据时出错:', err);
-                res.writeHead(500, { 'Content-Type': 'text/plain' });
-                res.end('解析表单数据时出错');
-                return;
-            }
-
-            // 获取图片文件
-            const imageFile = files.imageFile;
-            if (!imageFile) {
-                res.writeHead(400, { 'Content-Type': 'text/plain' });
-                res.end('未找到图片文件');
-                return;
-            }
-
-            try {
-               console.log(imageFile)
-                const newFormData = new (require('form-data'))();
-                 console.log(newFormData)
-                newFormData.append('imageFile', fs.createReadStream(imageFile[0].filepath));
-                newFormData.append('host','www.cnblogs.com');
-                newFormData.append('uploadType', 'Paste');
-               
-                // 发送 POST 请求到第三方接口
-                const response = await axios.post('https://upload.cnblogs.com'+req.url, newFormData, {
-                    headers: {
-                        ...req.headers,
-                        'Access-Control-Allow-Origin': 'https://i.cnblogs.com',
-                    }
-                });
-
-                // 将第三方接口的响应返回给客户端
-                res.writeHead(200, { 'Content-Type': 'application/json' });
-                res.end(JSON.stringify(response.data));
-            } catch (error) {
-                console.error('转发请求到第三方接口时出错:', error);
-                res.writeHead(500, { 'Content-Type': 'text/plain' });
-                res.end('转发请求到第三方接口时出错');
-            }
-        });
-    } else {
-        res.writeHead(405, { 'Content-Type': 'text/plain' });
-        res.end('只支持 POST 请求');
-    }
+  
 }
 let getProxyInfoData = (req, res, proxyUrl)=>{
 
