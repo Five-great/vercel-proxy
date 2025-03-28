@@ -138,10 +138,10 @@ const server = http.createServer(async(req, res) => {
     // 允许携带凭证（如 cookies）
     res.setHeader('Access-Control-Allow-Credentials', 'true');
       proxy.options.target='https://h.hunlihu.com';
-         req.headers['Access-Control-Allow-Origin']='https://h5.hunlihu2.com';
+         // req.headers['Access-Control-Allow-Origin']='https://h5.hunlihu2.com';
          req.headers['origin'] = subdirectoryMappings.app;
          req.headers['referer'] = subdirectoryMappings.app;
-         req.headers['host'] = "h5.hunlihu2.com";
+         req.headers['host'] = "h.hunlihu.com";
             
     // 将请求代理到目标服务器
      proxy.web(req, res);
