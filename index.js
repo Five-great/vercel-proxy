@@ -297,7 +297,7 @@ proxy.on('proxyRes', (proxyRes, req, res) => {
     // 处理可能需要修改的响应头，比如修改 cookie 中的 domain 等
     console.log(11, req.headers,res.headers)
          proxyRes.headers =  res.headers
-    if(res.headers['host'] == "h5.hunlihu2.com"){
+    if(res.headers['host'] == "h.hunlihu.com"){
          proxyRes.headers['access-control-allow-origin'] ="https://love.fivecc.cn"
          proxyRes.headers['origin'] = "https://h5.hunlihu2.com";
          proxyRes.headers['referer'] = "https://h5.hunlihu2.com";
@@ -315,9 +315,15 @@ proxy.on('proxyRes', (proxyRes, req, res) => {
             return cookie;
         });
         proxyRes.headers['set-cookie'] = cookies;
-          proxyRes.headers['access-control-allow-origin'] ="https://love.fivecc.cn"
-         proxyRes.headers['Origin']="https://s.hunlihu.com";
+          if(res.headers['host'] == "h.hunlihu.com"){
+         proxyRes.headers['access-control-allow-origin'] ="https://love.fivecc.cn"
+         proxyRes.headers['Origin'] = "https://h5.hunlihu2.com";
+         proxyRes.headers['Referer'] = "https://h5.hunlihu2.com";
+    }else{
+            proxyRes.headers['Origin']="https://s.hunlihu.com";
          proxyRes.headers['Referer']="https://s.hunlihu.com";
+    }
+      
 
     }
 });
