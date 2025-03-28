@@ -105,6 +105,7 @@ const subdirectoryMappings = {
      'map': "https://api.map.baidu.com",
      "blogs":  "https://img2024.cnblogs.com",
      "upload": "https://upload.cnblogs.com",
+     "app": "https://h5.hunlihu2.com",
 };
 // 创建HTTP服务器
 const server = http.createServer(async(req, res) => {
@@ -123,6 +124,24 @@ const server = http.createServer(async(req, res) => {
          req.headers['referer'] = 'https://www.cnblogs.com/';
          req.headers['host'] = "img2024.cnblogs.com";
          req.url = req.url.replace(new RegExp(`^\/static-img`), '/blog');
+            
+    // 将请求代理到目标服务器
+     proxy.web(req, res);
+   }
+    if(new RegExp(`^\/static\/`).test(req.url)){
+        // proxyRes.headers =  
+     res.setHeader('Access-Control-Allow-Origin', '*');
+    // 允许所有请求方法
+    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+    // 允许所有请求头
+    res.setHeader('Access-Control-Allow-Headers', req.headers['access-control-request-headers'] || '*');
+    // 允许携带凭证（如 cookies）
+    res.setHeader('Access-Control-Allow-Credentials', 'true');
+      proxy.options.target='https://h.hunlihu.com';
+       
+         req.headers['origin'] = subdirectoryMappings.app;
+         req.headers['referer'] = subdirectoryMappings.app;
+         req.headers['host'] = "h5.hunlihu2.com";
             
     // 将请求代理到目标服务器
      proxy.web(req, res);
