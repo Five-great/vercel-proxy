@@ -124,7 +124,7 @@ let getFormData2 = (req) => {
                 const formData = querystring.parse(body);
 
                 // 打印解析后的数据
-                // console.log('解析后的表单数据:', formData);
+                console.log('解析后的表单数据:', formData);
                 resolve(formData)
 
             });
@@ -155,7 +155,6 @@ let ProxyvVhunlihu = (req, res, proxyUrl) => {
     };
     return new Promise((resolve, reject) => {
         getFormData2(req).then((formData)=>{
-            formData.ua ? headersData["sec-ch-ua"] = formData.ua : '';
 
         // 目标服务器地址和端口
         const options = {
