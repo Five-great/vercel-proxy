@@ -307,6 +307,15 @@ const server = http.createServer(async (req, res) => {
         }
     }
     if (new RegExp(`^\/apiv\/`).test(req.url)) {
+        if (req.method === 'OPTIONS'){
+            res.writeHead(200, {
+            'Access-Control-Allow-Origin': "*",
+            'Access-Control-Allow-Methods': 'POST, OPTIONS',
+            'Access-Control-Allow-Headers': 'Content-Type',
+            'Access-Control-Max-Age': '86400'
+        });
+            return
+        }
         // proxyRes.headers =  
         res.setHeader('Access-Control-Allow-Origin', '*');
         // 允许所有请求方法
