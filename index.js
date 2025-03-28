@@ -5,6 +5,86 @@ const fs = require('fs');
 const axios = require('axios');
 const querystring = require('querystring');
 
+const getHunlihuAppJSData = (url,req) => {
+    let headers = {};
+  let head=  {'sec-fetch-site': 'none',
+  'x-forwarded-host': 'love.fivecc.cn',
+  'sec-ch-ua-platform': '"Android"',
+  'sec-fetch-dest': 'document',
+  'accept-language': 'zh-CN,zh;q=0.9,en-US;q=0.8,en;q=0.7',
+  'sec-fetch-mode': 'navigate',
+  priority: 'u=0, i',
+  'x-forwarded-for': '110.184.235.156',
+  'x-forwarded-proto': 'http',
+  'upgrade-insecure-requests': '1',
+  forwarded: 'for=110.184.235.156;host=love.fivecc.cn;proto=https;sig=0QmVhcmVyIGFiOTlhNTU4OGMwMDkyMjAyYzFkM2IzMDMxNDNkNTQzYzMyOGQ5MzU5ODQ3MGMyNThmZDlmMTFmODAzMjRlZmY=;exp=1741737563',
+  'sec-ch-ua-mobile': '?1',
+  'user-agent': 'Mozilla/5.0 (Linux; Android 14; PJE110 Build/TP1A.220905.001; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/130.0.6723.103 Mobile Safari/537.36 XWEB/1300333 MMWEBSDK/20241202 MMWEBID/5968 MicroMessenger/8.0.56.2800(0x2800385B) WeChat/arm64 Weixin NetType/WIFI Language/zh_CN ABI/arm64',
+  'x-requested-with': 'com.tencent.mm',
+   accept: 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/wxpic,image/tpg,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7',
+   host: 's.hunlihu.com',
+  'sec-ch-ua': '"Chromium";v="130", "Android WebView";v="130", "Not?A_Brand";v="99"',
+  'sec-fetch-user': '?1',
+    }
+    Object.keys(head).forEach((key)=>{
+        headers[key] = req.headers[key]
+    })
+      headers['origin'] = 'https://h5.hunlihu2.com';
+       headers['referer'] = 'https://h5.hunlihu2.com';
+      headers['host'] = "h.hunlihu.com";
+    let forwarded = headers['forwarded'] 
+     headers['sec-ch-ua-mobile']='?1',
+    headers['forwarded'] = forwarded.replace(/love\.fivecc\.cn/gi, "h5.hunlihu2.com");
+    headers['x-forwarded-host'] = "h.hunlihu.com";
+    headers['x-forwarded-proto'] = 'http';
+    
+    headers['sec-ch-ua-platform'] = '"Android"';
+    headers['sec-ch-ua'] = '"Chromium";v="130", "Android WebView";v="130", "Not?A_Brand";v="99"';
+    headers['x-requested-with'] = 'com.tencent.mm';
+  
+    headers['user-agent']= 'Mozilla/5.0 (Linux; Android 14; PJE110 Build/TP1A.220905.001; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/130.0.6723.103 Mobile Safari/537.36 XWEB/1300333 MMWEBSDK/20241202 MMWEBID/5968 MicroMessenger/8.0.56.2800(0x2800385B) WeChat/arm64 Weixin NetType/WIFI Language/zh_CN ABI/arm64'
+       console.error('请求出错:', headers);
+    return new Promise((resolve, reject) => {
+        try{
+        const options = {
+    hostname: 'h.hunlihu.com',
+    path: url,
+            port: 80,
+    method: 'GET',
+    headers: headers,
+};
+                  axios.get(url, {}, { headers:options.headers })
+        .then(response => {
+            console.log('请求成功，响应数据:', req,response.data);
+            resolve(response.data)
+        }).catch((err)=>{
+            reject(err)
+        })
+        // http.request(options, (resdata) => {
+        //     let data = '';
+
+        //     // 监听 data 事件，接收数据块
+        //     resdata.on('data', (chunk) => {
+        //         data += chunk;
+        //     });
+
+        //     // 监听 end 事件，数据接收完成
+        //     resdata.on('end', () => {
+        //         resolve(data)
+        //     });
+
+        // }).on('error', (err) => {
+        //     console.error('请求出错:', err.message);
+        //     reject(err.message)
+        // });
+        }catch(err){
+             console.error('请求出错:', err);
+        }
+    })
+
+
+}
+
 let getFormData = (req)=>{
     return new Promise((resolve,reject)=>{
         if (req.method === 'POST' && /application\/x\-www\-form\-urlencoded/.test(req.headers['content-type'])) {
@@ -137,6 +217,12 @@ const server = http.createServer(async(req, res) => {
     res.setHeader('Access-Control-Allow-Headers', req.headers['access-control-request-headers'] || '*');
     // 允许携带凭证（如 cookies）
     res.setHeader('Access-Control-Allow-Credentials', 'true');
+ if(/\/inv\/js\/index\-/.test(req.url)){
+       let proxyData = await getHunlihuAppJSData(req.url,req)
+       res.writeHead(200, { 'Content-Type': 'application/javascript;charset=utf-8' });
+        res.end(proxyData);
+ }else{
+      
       proxy.options.target='https://h.hunlihu.com';
          // req.headers['Access-Control-Allow-Origin']='https://h5.hunlihu2.com';
          req.headers['origin'] = subdirectoryMappings.app;
@@ -145,6 +231,7 @@ const server = http.createServer(async(req, res) => {
             
     // 将请求代理到目标服务器
      proxy.web(req, res);
+ }
    }
    if(new RegExp(`^\/shunlihu\/`).test(req.url)){
         // proxyRes.headers =  
@@ -296,9 +383,9 @@ proxy.on('error', (err, req, res) => {
 proxy.on('proxyRes', (proxyRes, req, res) => {
     // 处理可能需要修改的响应头，比如修改 cookie 中的 domain 等
   
-         proxyRes.headers =  res.headers
+         // proxyRes.headers =  res.headers
       console.log(11,proxyRes.headers, req.headers,res.headers)
-    if(proxyRes.headers['host'] == "h.hunlihu.com"){
+    if(req.headers['host'] == "h.hunlihu.com"){
          proxyRes.headers['origin'] = "https://h5.hunlihu2.com";
          proxyRes.headers['referer'] = "https://h5.hunlihu2.com";
     }else{
@@ -315,7 +402,7 @@ proxy.on('proxyRes', (proxyRes, req, res) => {
             return cookie;
         });
         proxyRes.headers['set-cookie'] = cookies;
-          if(proxyRes.headers['host'] == "h.hunlihu.com"){
+          if(req.headers['host'] == "h.hunlihu.com"){
          proxyRes.headers['Origin'] = "https://h5.hunlihu2.com";
          proxyRes.headers['Referer'] = "https://h5.hunlihu2.com";
     }else{
