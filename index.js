@@ -54,7 +54,6 @@ const getHunlihuAppJSData = (url, req) => {
             };
             axios.get(url, {}, { headers: options.headers })
                 .then(response => {
-                    console.log('请求成功，响应数据:', req, response.data);
                     resolve(response.data)
                 }).catch((err) => {
                     reject(err)
@@ -109,6 +108,30 @@ let getFormData = (req) => {
     })
 }
 
+let getFormData2 = (req) => {
+    return new Promise((resolve, reject) => {
+        if (req.method === 'POST') {
+            let body = '';
+
+            // 监听 data 事件，接收数据块
+            req.on('data', (chunk) => {
+                body += chunk.toString();
+            });
+
+            // 监听 end 事件，数据接收完成
+            req.on('end', () => {
+                // 解析请求体
+                const formData = querystring.parse(body);
+
+                // 打印解析后的数据
+                // console.log('解析后的表单数据:', formData);
+                resolve(formData)
+
+            });
+        }
+
+    })
+}
 let uploadFiles = (req, res) => {
 
 }
@@ -130,11 +153,9 @@ let ProxyvVhunlihu = (req, res, proxyUrl) => {
         "Sec-Fetch-Site": "same-site",
         "User-Agent": "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.5060.66 Safari/537.36",
     };
-    let body = req.body
-    console.log(`body`, body)
     return new Promise((resolve, reject) => {
-        // getFormData(req).then((formData)=>{
-        body.ua ? headersData["sec-ch-ua"] = body.ua : ''
+        getFormData2(req).then((formData)=>{
+            formData.ua ? headersData["sec-ch-ua"] = formData.ua : '';
 
         // 目标服务器地址和端口
         const options = {
@@ -145,11 +166,11 @@ let ProxyvVhunlihu = (req, res, proxyUrl) => {
         let url = "http://v.hunlihu.com" + proxyUrl;
 
         // // 将对象格式的数据转换为 x-www-form-urlencoded 格式
-        // const encodedData = querystring.stringify(formData);
+        const encodedData = querystring.stringify(formData);
 
         // // 更新请求头中的 Content-Length
-        // options.headers['Content-Length'] = Buffer.byteLength(encodedData);
-        axios.post(url, body, { headers: options.headers })
+        options.headers['Content-Length'] = Buffer.byteLength(encodedData);
+        axios.post(url, encodedData, { headers: options.headers })
             .then(response => {
                 console.log('请求成功，响应数据:', req, response.data);
                 resolve(response.data)
@@ -157,7 +178,7 @@ let ProxyvVhunlihu = (req, res, proxyUrl) => {
                 reject(err)
             })
 
-        // })
+        })
 
     })
 }
