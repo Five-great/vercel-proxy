@@ -138,7 +138,7 @@ const server = http.createServer(async(req, res) => {
     // 允许携带凭证（如 cookies）
     res.setHeader('Access-Control-Allow-Credentials', 'true');
       proxy.options.target='https://h.hunlihu.com';
-       
+         req.headers['Access-Control-Allow-Origin']='https://h5.hunlihu2.com';
          req.headers['origin'] = subdirectoryMappings.app;
          req.headers['referer'] = subdirectoryMappings.app;
          req.headers['host'] = "h5.hunlihu2.com";
@@ -156,7 +156,7 @@ const server = http.createServer(async(req, res) => {
     // 允许携带凭证（如 cookies）
     res.setHeader('Access-Control-Allow-Credentials', 'true');
       proxy.options.target=subdirectoryMappings.shunlihu;
-       
+      
          req.headers['origin'] = subdirectoryMappings.shunlihu;
          req.headers['referer'] = subdirectoryMappings.shunlihu;
          req.headers['host'] = "h5.hunlihu.com";
@@ -297,6 +297,16 @@ proxy.on('proxyRes', (proxyRes, req, res) => {
     // 处理可能需要修改的响应头，比如修改 cookie 中的 domain 等
     // console.log(11, req.headers)
          proxyRes.headers =  res.headers
+    if(res.headers['host'] == "h5.hunlihu2.com"){
+         proxyRes.headers['access-control-allow-origin'] ="https://love.fivecc.cn"
+         proxyRes.headers['origin'] = "https://h5.hunlihu2.com";
+         proxyRes.headers['referer'] = "https://h5.hunlihu2.com";
+    }else{
+           proxyRes.headers['host'] = "h5.hunlihu.com";
+         proxyRes.headers['origin'] = "https://s.hunlihu.com";
+         proxyRes.headers['referer'] = "https://s.hunlihu.com";
+    }
+              
          proxyRes.headers['host'] = "h5.hunlihu.com";
          proxyRes.headers['origin'] = "https://s.hunlihu.com";
          proxyRes.headers['referer'] = "https://s.hunlihu.com";
@@ -308,6 +318,7 @@ proxy.on('proxyRes', (proxyRes, req, res) => {
             return cookie;
         });
         proxyRes.headers['set-cookie'] = cookies;
+          proxyRes.headers['access-control-allow-origin'] ="https://love.fivecc.cn"
          proxyRes.headers['Origin']="https://s.hunlihu.com";
          proxyRes.headers['Referer']="https://s.hunlihu.com";
 
