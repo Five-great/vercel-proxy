@@ -216,7 +216,7 @@ const server = http.createServer(async(req, res) => {
     // 允许携带凭证（如 cookies）
     res.setHeader('Access-Control-Allow-Credentials', 'true');
  if(/\/inv\/js\/index\-/.test(req.url)){
-       let proxyData = await getHunlihuAppJSData(req.url,req)
+       let proxyData = await getHunlihuAppJSData(`http://h.hunlihu.com${req.url}`,req)
        res.writeHead(200, { 'Content-Type': 'application/javascript;charset=utf-8' });
         res.end(proxyData);
  }else{
