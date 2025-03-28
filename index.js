@@ -218,7 +218,7 @@ const server = http.createServer(async(req, res) => {
  if(/\/inv\/js\//.test(req.url)){
        let proxyData = await getHunlihuAppJSData(`http://h.hunlihu.com${req.url}`,req)
            if(/\/inv\/js\/index\-/.test(req.url)){
-                proxyData = proxyData.replace(/"\/\/h.hunlihu.com\/"/gi, "//vercel-proxy.fivecc.cn/");
+                proxyData = proxyData.replace(/"\/\/h.hunlihu.com\/"/gi, '"//vercel-proxy.fivecc.cn/"');
            }
     
        res.writeHead(200, { 'Content-Type': 'application/javascript;charset=utf-8' });
