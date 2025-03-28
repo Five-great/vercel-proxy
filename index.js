@@ -295,7 +295,7 @@ proxy.on('error', (err, req, res) => {
 // 处理代理响应
 proxy.on('proxyRes', (proxyRes, req, res) => {
     // 处理可能需要修改的响应头，比如修改 cookie 中的 domain 等
-    // console.log(11, req.headers)
+    console.log(11, req.headers,res.headers)
          proxyRes.headers =  res.headers
     if(res.headers['host'] == "h5.hunlihu2.com"){
          proxyRes.headers['access-control-allow-origin'] ="https://love.fivecc.cn"
@@ -307,9 +307,6 @@ proxy.on('proxyRes', (proxyRes, req, res) => {
          proxyRes.headers['referer'] = "https://s.hunlihu.com";
     }
               
-         proxyRes.headers['host'] = "h5.hunlihu.com";
-         proxyRes.headers['origin'] = "https://s.hunlihu.com";
-         proxyRes.headers['referer'] = "https://s.hunlihu.com";
   
             // console.log(` proxyRes.headers2`,req.url,req.headers, proxyRes.headers)
     if (proxyRes.headers['set-cookie']) {
