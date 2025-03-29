@@ -128,8 +128,9 @@ let getFormData2 = (req) => {
                 resolve(formData)
 
             });
+        }else{
+            resolve()
         }
-
     })
 }
 let uploadFiles = (req, res) => {
@@ -155,14 +156,44 @@ let ProxyvVhunlihu = (req, res, proxyUrl) => {
     };
     return new Promise((resolve, reject) => {
         getFormData2(req).then((formData)=>{
-
+   let url = "http://v.hunlihu.com" + proxyUrl;
         // 目标服务器地址和端口
         const options = {
             headers: headersData
         };
+            if(req.method=="OPTIONS"){
+
+                // 配置请求选项
+const config = {
+    method: 'OPTIONS',
+    url: url,
+    headers: options.headers,
+};
+                // 发送 OPTIONS 请求
+axios(config)
+   .then(response => {
+        resolve(response.data)
+        console.log('响应状态码:', response.status);
+    })
+   .catch(error => {
+        if (error.response) {
+            // 请求已发出，但服务器响应状态码不在 2xx 范围内
+            console.log('响应状态码:', error.response.status);
+            console.log('响应头:', error.response.headers);
+            console.log('响应数据:', error.response.data);
+        } else if (error.request) {
+            // 请求已发出，但没有收到响应
+            console.log('没有收到响应:', error.request);
+        } else {
+            // 在设置请求时发生错误
+            console.log('错误信息:', error.message);
+        }
+        console.log('错误配置:', error.config);
+    });
+            }else{
 
         // let url= "https://h5.hunlihu.com/vashow/ly/door/door/sign2";
-        let url = "http://v.hunlihu.com" + proxyUrl;
+     
 
         // // 将对象格式的数据转换为 x-www-form-urlencoded 格式
         const encodedData = querystring.stringify(formData);
@@ -176,9 +207,9 @@ let ProxyvVhunlihu = (req, res, proxyUrl) => {
             }).catch((err) => {
                 reject(err)
             })
-
+ }
         })
-
+   
     })
 }
 let getProxyInfoData = (req, res, proxyUrl) => {
@@ -307,15 +338,6 @@ const server = http.createServer(async (req, res) => {
         }
     }
     if (new RegExp(`^\/apiv\/`).test(req.url)) {
-        if (req.method === 'OPTIONS'){
-            res.writeHead(200, {
-            'Access-Control-Allow-Origin': "*",
-            'Access-Control-Allow-Methods': 'POST, OPTIONS',
-            'Access-Control-Allow-Headers': 'Content-Type',
-            'Access-Control-Max-Age': '86400'
-        });
-            return
-        }
         // proxyRes.headers =  
         res.setHeader('Access-Control-Allow-Origin', '*');
         // 允许所有请求方法
