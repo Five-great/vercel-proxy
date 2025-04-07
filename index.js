@@ -321,6 +321,7 @@ const server = http.createServer(async (req, res) => {
             if (/\/inv\/js\/index\-/.test(req.url)) {
                 proxyData = proxyData.replace(/"\/\/h.hunlihu.com\/"/gi, '"//vercel-proxy.fivecc.cn/"');
                 proxyData = proxyData.replace(/"https\:\/\/v.hunlihu.com\/"/gi, '"https://vercel-proxy.fivecc.cn/apiv/"');
+                 proxyData = proxyData.replace(/\/\/h.hunlihu.com\//gi, '//vercel-proxy.fivecc.cn/static/');
             }
 
             res.writeHead(200, { 'Content-Type': 'application/javascript;charset=utf-8' });
@@ -332,7 +333,7 @@ const server = http.createServer(async (req, res) => {
             req.headers['origin'] = subdirectoryMappings.app;
             req.headers['referer'] = subdirectoryMappings.app;
             req.headers['host'] = "h.hunlihu.com";
-
+            req.url = req.url.replace(new RegExp(`^\/static`), '');
             // 将请求代理到目标服务器
             proxy.web(req, res);
         }
