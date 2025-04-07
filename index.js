@@ -115,7 +115,7 @@ let getFormData2 = (req) => {
 
             // 监听 data 事件，接收数据块
             req.on('data', (chunk) => {
-                if(chunk){
+                if(chunk&&chunk.toString){
                 body += chunk.toString();
                 }
             });
