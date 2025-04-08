@@ -130,7 +130,7 @@ let getFormData2 = (req) => {
                 console.log('解析后的表单数据:', formData);
                 resolve(formData)
                 }catch(e){
-                     resolve({})
+                     resolve("{}")
                 }
 
             });
