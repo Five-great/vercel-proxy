@@ -310,7 +310,26 @@ const server = http.createServer(async (req, res) => {
         // 将请求代理到目标服务器
         proxy.web(req, res);
     }
-    if (new RegExp(`^\/static\/`).test(req.url)) {
+    if (new RegExp(`^\/static2\/`).test(req.url)) {
+        // proxyRes.headers =  
+        res.setHeader('Access-Control-Allow-Origin', '*');
+        // 允许所有请求方法
+        res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+        // 允许所有请求头
+        res.setHeader('Access-Control-Allow-Headers', req.headers['access-control-request-headers'] || '*');
+        // 允许携带凭证（如 cookies）
+        res.setHeader('Access-Control-Allow-Credentials', 'true');
+     
+
+            proxy.options.target = 'https://h.hunlihu.com';
+            // req.headers['Access-Control-Allow-Origin']='https://h5.hunlihu2.com';
+            req.headers['origin'] = subdirectoryMappings.app;
+            req.headers['referer'] = subdirectoryMappings.app;
+            req.headers['host'] = "h.hunlihu.com";
+            req.url = req.url.replace(new RegExp(`^\/static2`), '');
+            // 将请求代理到目标服务器
+            proxy.web(req, res);
+    }else if (new RegExp(`^\/static\/`).test(req.url)) {
         // proxyRes.headers =  
         res.setHeader('Access-Control-Allow-Origin', '*');
         // 允许所有请求方法
@@ -324,7 +343,7 @@ const server = http.createServer(async (req, res) => {
             if (/\/inv\/js\/index\-/.test(req.url)) {
                 proxyData = proxyData.replace(/"\/\/h.hunlihu.com\/"/gi, '"//vercel-proxy.fivecc.cn/"');
                 proxyData = proxyData.replace(/"https\:\/\/v.hunlihu.com\/"/gi, '"https://vercel-proxy.fivecc.cn/apiv/"');
-                 proxyData = proxyData.replace(/\/\/h.hunlihu.com\//gi, '//vercel-proxy.fivecc.cn/static/');
+                 proxyData = proxyData.replace(/\/\/h.hunlihu.com\//gi, '//vercel-proxy.fivecc.cn/static2/');
             }
 
             res.writeHead(200, { 'Content-Type': 'application/javascript;charset=utf-8' });
@@ -336,7 +355,7 @@ const server = http.createServer(async (req, res) => {
             req.headers['origin'] = subdirectoryMappings.app;
             req.headers['referer'] = subdirectoryMappings.app;
             req.headers['host'] = "h.hunlihu.com";
-            req.url = req.url.replace(new RegExp(`^\/static`), '');
+            // req.url = req.url.replace(new RegExp(`^\/static`), '');
             // 将请求代理到目标服务器
             proxy.web(req, res);
         }
