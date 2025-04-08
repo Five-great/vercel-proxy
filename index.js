@@ -123,11 +123,15 @@ let getFormData2 = (req) => {
             // 监听 end 事件，数据接收完成
             req.on('end', () => {
                 // 解析请求体
+                try{
                 const formData = querystring.parse(body);
 
                 // 打印解析后的数据
                 console.log('解析后的表单数据:', formData);
                 resolve(formData)
+                }catch(e){
+                     resolve({})
+                }
 
             });
         }else{
